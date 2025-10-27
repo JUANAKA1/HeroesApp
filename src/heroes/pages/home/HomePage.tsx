@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CustomJumbotron } from "@/components/custom/CustomJumbotron";
 import { HeroStarts } from "@/heroes/components/HeroStarts";
@@ -6,11 +7,23 @@ import { useState } from "react";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { Heart } from "lucide-react";
 import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
+import { getHeroesByPageAction } from "@/heroes/actions/get-heroes-by-page.actions";
 
 export function HomePage() {
   const [activeTab, setActiveTab] = useState<
     "all" | "favorites" | "heroes" | "villains"
   >("all");
+
+  const { data } = useQuery({
+    queryKey: ["heroes"],
+    queryFn: () => getHeroesByPageAction(),
+    staleTime: 1000 * 60 * 5,
+  });
+  console.log(data);
+
+  // useEffect(() => {
+  //   getHeroesByPage().then((heroes) => console.log({ heroes }));
+  // }, []);
 
   return (
     <>
@@ -20,7 +33,7 @@ export function HomePage() {
           title="Universo de Super heroes"
           description="Descubre, explora, y administra tus superheroes y villanos favoritos"
         />
-        
+
         <CustomBreadcrumbs currentPage="Super Héroes" />
 
         {/* Stats Dashboard */}
