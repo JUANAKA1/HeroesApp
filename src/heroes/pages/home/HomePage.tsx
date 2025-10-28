@@ -16,6 +16,7 @@ export function HomePage() {
   const activeTab = searchParams.get("tab") ?? "all";
   const page = searchParams.get("page") ?? "1";
   const limit = searchParams.get("limit") ?? "6";
+  const category = searchParams.get("category") ?? "all";
 
   const selectedTab = useMemo(() => {
     const validTabs = ["all", "favorites", "heroes", "villains"];
@@ -25,7 +26,7 @@ export function HomePage() {
   // const [activeTab, setActiveTab] = useState<
   //   "all" | "favorites" | "heroes" | "villains"
   // >("all");
-  const { data: heroesResponse } = usePaginateHero(+page, +limit);
+  const { data: heroesResponse } = usePaginateHero(+page, +limit, category);
   // const { data: heroesResponse } = useQuery({
   //   queryKey: ["heroes", { page, limit }],
   //   queryFn: () => getHeroesByPageAction(+page, +limit),
@@ -33,16 +34,16 @@ export function HomePage() {
   // });
   const { data: summary } = useHeroSummary();
   // const { data: summary } = useQuery({
-    //   queryKey: ["sumary"],
-    //   queryFn: getSummaryAction,
-    //   staleTime: 6000 * 5,
-    // });
-    
-    // useEffect(() => {
-      //   getHeroesByPage().then((heroes) => console.log({ heroes }));
-      // }, []);
-      
-      const heroes = heroesResponse?.heroes ?? [];
+  //   queryKey: ["sumary"],
+  //   queryFn: getSummaryAction,
+  //   staleTime: 6000 * 5,
+  // });
+
+  // useEffect(() => {
+  //   getHeroesByPage().then((heroes) => console.log({ heroes }));
+  // }, []);
+
+  const heroes = heroesResponse?.heroes ?? [];
   return (
     <>
       <>
@@ -65,6 +66,8 @@ export function HomePage() {
               onClick={() => {
                 setSearchParams((prev) => {
                   prev.set("tab", "all");
+                  prev.set("category", "all");
+                  prev.set("page", "1");
                   return prev;
                 });
               }}
@@ -89,6 +92,8 @@ export function HomePage() {
               onClick={() => {
                 setSearchParams((prev) => {
                   prev.set("tab", "heroes");
+                  prev.set("category", "hero");
+                  prev.set("page", "1");
                   return prev;
                 });
               }}
@@ -100,6 +105,8 @@ export function HomePage() {
               onClick={() => {
                 setSearchParams((prev) => {
                   prev.set("tab", "villains");
+                  prev.set("category", "villain");
+                  prev.set("page", "1");
                   return prev;
                 });
               }}

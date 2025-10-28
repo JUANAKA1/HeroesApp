@@ -18,7 +18,7 @@ export const CustomMenu = () => {
   };
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className="py-8" >
       <NavigationMenuList className="flex gap-2">
         <NavigationMenuItem>
           <NavigationMenuLink
