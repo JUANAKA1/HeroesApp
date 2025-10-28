@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +8,8 @@ import { HeroGrid } from "@/heroes/components/HeroGrid";
 import { CustomPagination } from "@/components/custom/CustomPagination";
 import { Heart } from "lucide-react";
 import { CustomBreadcrumbs } from "@/components/custom/CustomBreadcrumbs";
-import { getHeroesByPageAction } from "@/heroes/actions/get-heroes-by-page.actions";
+import { useHeroSummary } from "@/hooks/useHeroSummary";
+import { usePaginateHero } from "@/hooks/usePaginateHero";
 
 export function HomePage() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,19 +25,24 @@ export function HomePage() {
   // const [activeTab, setActiveTab] = useState<
   //   "all" | "favorites" | "heroes" | "villains"
   // >("all");
-
-  const { data: heroesResponse } = useQuery({
-    queryKey: ["heroes", { page, limit }],
-    queryFn: () => getHeroesByPageAction(+page, +limit),
-    staleTime: 1000 * 60 * 5,
-  });
-  const heroes = heroesResponse?.heroes ?? [];
-  console.log(heroes);
-
-  // useEffect(() => {
-  //   getHeroesByPage().then((heroes) => console.log({ heroes }));
-  // }, []);
-
+  const { data: heroesResponse } = usePaginateHero(+page, +limit);
+  // const { data: heroesResponse } = useQuery({
+  //   queryKey: ["heroes", { page, limit }],
+  //   queryFn: () => getHeroesByPageAction(+page, +limit),
+  //   staleTime: 1000 * 60 * 5,
+  // });
+  const { data: summary } = useHeroSummary();
+  // const { data: summary } = useQuery({
+    //   queryKey: ["sumary"],
+    //   queryFn: getSummaryAction,
+    //   staleTime: 6000 * 5,
+    // });
+    
+    // useEffect(() => {
+      //   getHeroesByPage().then((heroes) => console.log({ heroes }));
+      // }, []);
+      
+      const heroes = heroesResponse?.heroes ?? [];
   return (
     <>
       <>
@@ -64,7 +69,7 @@ export function HomePage() {
                 });
               }}
             >
-              All Characters (16)
+              All Characters ({summary?.totalHeroes})
             </TabsTrigger>
             <TabsTrigger
               value="favorites"
@@ -88,7 +93,7 @@ export function HomePage() {
                 });
               }}
             >
-              Heroes (12)
+              Heroes ({summary?.heroCount})
             </TabsTrigger>
             <TabsTrigger
               value="villains"
@@ -99,7 +104,7 @@ export function HomePage() {
                 });
               }}
             >
-              Villains (2)
+              Villains ({summary?.villainCount})
             </TabsTrigger>
           </TabsList>
 
